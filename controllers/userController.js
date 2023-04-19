@@ -4,7 +4,7 @@ module.exports = {
   // Get all users
   async getUsers(req, res) {
     try {
-      const users = await User.find();
+      const users = await User.find().select('-_id -friends');
       res.json(users);
     } catch (err) {
       res.status(500).json(err);
@@ -14,7 +14,7 @@ module.exports = {
   async getSingleUser(req, res) {
     try {
       const user = await User.findOne({ _id: req.params.userId }).select(
-        '-__v'
+        '-_id'
       );
 
       if (!user) {

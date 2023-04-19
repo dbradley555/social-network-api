@@ -151,9 +151,7 @@ const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 // Gets a random full name
 const getRandomUsername = () =>
-  `${getRandomArrItem(names)} ${Math.floor(
-    Math.random() * (99 - 18 + 1) + 18
-  )}`;
+  `${getRandomArrItem(names)}${Math.floor(Math.random() * (99 - 18 + 1) + 18)}`;
 
 const getRandomThoughts = () => `${getRandomArrItem(thoughts)}`;
 

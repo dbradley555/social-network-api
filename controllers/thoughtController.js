@@ -1,12 +1,7 @@
 const { Thought, User } = require('../models');
 
 // Aggregate function to get the number of reactions to the thought
-const reactionCount = async () => {
-  const numberofReactions = await Thought.reactions
-    .aggregate()
-    .count('reactionCount');
-  return numberofReactions;
-};
+
 
 module.exports = {
   // Get all thoughts
