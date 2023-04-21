@@ -1,4 +1,7 @@
 const { Schema, Types } = require('mongoose');
+const dayjs = require('dayjs');
+const localizedFormat = require('dayjs/plugin/localizedFormat');
+dayjs.extend(localizedFormat);
 
 const reactionSchema = new Schema(
   {
@@ -16,17 +19,18 @@ const reactionSchema = new Schema(
       required: true,
     },
     createdAt: {
-      type: Date,
-      default: Date.now,
+      type: String,
+      required: true,
+      default: () => dayjs().format('LLLL'),
     },
   },
   {
     toJSON: {
       getters: true,
     },
+
     id: false,
   }
 );
 
 module.exports = reactionSchema;
-

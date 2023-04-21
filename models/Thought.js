@@ -1,6 +1,8 @@
 const { Schema, model } = require('mongoose');
 const reactionSchema = require('./Reaction');
-
+const dayjs = require('dayjs');
+const localizedFormat = require('dayjs/plugin/localizedFormat');
+dayjs.extend(localizedFormat);
 // Schema to create a Thought model
 const thoughtSchema = new Schema(
   {
@@ -11,8 +13,9 @@ const thoughtSchema = new Schema(
       maxLength: 280,
     },
     createdAt: {
-      type: Date,
-      default: Date.now,
+      type: String,
+      required: true,
+      default: () => dayjs().format('LLLL'),
     },
     username: {
       type: String,
@@ -24,6 +27,7 @@ const thoughtSchema = new Schema(
     toJSON: {
       virtuals: true,
     },
+
     id: false,
   }
 );

@@ -2,19 +2,13 @@ const { Thought, User } = require('../models');
 
 // Aggregate function to get the number of reactions to the thought
 
-
 module.exports = {
   // Get all thoughts
   async getThoughts(req, res) {
     try {
       const thoughts = await Thought.find();
 
-      const thoughtObj = {
-        thoughts,
-        reactionCount: await reactionCount(),
-      };
-
-      res.json(thoughtObj);
+      res.json(thoughts);
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);
@@ -31,10 +25,7 @@ module.exports = {
         return res.status(404).json({ message: 'No thought with that ID' });
       }
 
-      res.json({
-        thought,
-        reactionCount: await reactionCount(req.params.thoughtId),
-      });
+      res.json(thought);
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);
@@ -75,6 +66,24 @@ module.exports = {
       res.json({ message: 'Thought successfully deleted' });
     } catch (err) {
       console.log(err);
+      res.status(500).json(err);
+    }
+  },
+
+  async updateThought(req, res) {
+    try {
+      const thought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $set: req.body },
+        { runValidators: true, new: true }
+      );
+
+      if (!thought) {
+        res.status(404).json({ message: 'No thought with this id!' });
+      }
+
+      res.json(thought);
+    } catch (err) {
       res.status(500).json(err);
     }
   },

@@ -1,60 +1,70 @@
 const connection = require('../config/connection');
 const { User, Thought } = require('../models');
 const {
-  getRandomUsername,
-  getRandomReactions,
   getRandomThoughts,
+  usernames,
+  getRandomReactions,
+  searchByUsername,
+  getRandomFriends,
 } = require('./data');
-
-const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 connection.on('error', (err) => err);
 
 connection.once('open', async () => {
   console.log('connected');
-
-  // Drop existing courses
+  await Thought.deleteMany({});
   await User.deleteMany({});
 
-  // Drop existing students
-  await Thought.deleteMany({});
+  // const thoughts = getRandomThoughts(30);
 
-  // Create empty array to hold the students
-  const thoughts = [];
-  const users = [];
+  // const users = [];
 
-  // Loop 20 times -- add students to the students array
+  // for (let i = 0; i < usernames.length; i++) {
+  //   let username = usernames[i];
+  //   let email = `${username}${Math.floor(Math.random() * 99 + 1)}@gmail.com`;
+  //   const filteredThoughts = [];
+  //   thoughts.forEach((thought) => {
+  //     if (thought.username === username) {
+  //       filteredThoughts.push(thought);
+  //     }
+  //   });
+
+  //   const friends = getRandomFriends(Math.floor(Math.random() * 10 + 1));
+  //   users.push({
+  //     username,
+  //     email,
+  //     thoughts: [filteredThoughts],
+  //     friends,
+  //   });
+  // }
 
   for (let i = 0; i < 20; i++) {
-    // Get some random assignment objects using a helper function that we imported from ./data
-    const reactions = getRandomReactions(5);
-    const username = getRandomUsername();
-    const email = `${username}${Math.floor(
-      Math.random() * (99 - 18 + 1) + 18
-    )}@email.com`;
-    const thoughtText = getRandomThoughts();
-    thoughts.push({
-      thoughtText,
-      username,
-      reactions,
-    });
+    const thoughts = [];
+    const username = usernames[i];
+    const email = `${username}${Math.floor(Math.random() * 99 + 1)}@gmail.com`;
 
-    // Add students to the collection and await the results
-    await Thought.collection.insertOne({
-      thoughtText: thoughtText,
-      username: username,
-      reactions: [...reactions],
-    });
+    for (let x = 0; x < Math.floor(Math.random() * 5 + 1); x++) {
+      const reactions = getRandomReactions(Math.floor(Math.random() * 3 + 1));
+      const thoughtText = getRandomThoughts();
+
+      thoughts.push({
+        thoughtText,
+        username,
+        reactions,
+      });
+    }
+
+    await Thought.collection.insertMany(thoughts);
     await User.collection.insertOne({
-      username: username,
-      email: email,
+      username,
+      email,
       thoughts: [...thoughts],
     });
   }
 
-  // Log out the seed data to indicate what should appear in the database
-  console.table(users);
-  console.table(thoughts);
+  // loop through the saved applications, for each application we need to generate a application response and insert the application responses
+  // console.table(users);
+  // console.table(thoughts);
   console.info('Seeding complete! 🌱');
   process.exit(0);
 });
